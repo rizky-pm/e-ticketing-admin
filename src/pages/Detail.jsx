@@ -10,7 +10,6 @@ import { fetchTicket, patchComment } from '../rtk/features/ticketSlice';
 
 import ModalComponent from '../components/ModalComponent';
 import CommentCard from '../components/CommentCard';
-import TextareaComponent from '../components/TextareaComponent';
 
 const Detail = () => {
   const [comment, setComment] = useState('');
@@ -55,9 +54,28 @@ const Detail = () => {
       data,
     };
 
-    console.log(data);
-
     dispatch(patchComment(payload));
+  };
+
+  const downloadFile = (file) => {
+    // console.log(file.attachment.base64String);
+    const meta = file.attachment.base64String.substring(
+      file.attachment.base64String.indexOf(','),
+      0
+    );
+
+    const base64String = file.attachment.base64String.substring(
+      file.attachment.base64String.indexOf(',')
+    );
+
+    console.log(meta + base64String);
+    const linkSource = `${meta + base64String}`;
+    const downloadLink = document.createElement('a');
+    const fileName = file.attachment.fileName;
+
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
   };
 
   useEffect(() => {
@@ -82,24 +100,26 @@ const Detail = () => {
               <div
                 className='w-full h-60 bg-[#F7F9F9] border-dashed border-2 border-darkGreen flex flex-col justify-center items-center space-y-4'
                 onClick={(e) => {
-                  console.log('Clicked');
-                  console.log(ticket.data?.attachment.fileName);
-                  handleOpen();
-
                   if (
                     ['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(
                       ticket.data?.attachment.extension
                     )
                   ) {
+                    handleOpen();
                     setModalData({
-                      image: ticket.data?.attachment.base64String,
-                      imageName: ticket.data?.attachment.fileName,
+                      base64String: ticket.data?.attachment.base64String,
+                      fileName: ticket.data?.attachment.fileName,
+                      extension: ticket.data?.attachment.extension,
                     });
+                  } else {
+                    downloadFile(ticket?.data);
+                    console.log(ticket?.data.attachment);
                   }
                 }}
               >
                 <div className='flex flex-col justify-center items-center'>
                   <DocumentIcon className='w-10 h-10 text-gray-500' />
+                  <span>{ticket?.data.attachment.fileName}</span>
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from '@mui/material/Modal';
+import { DocumentIcon } from '@heroicons/react/24/outline';
 
 const ModalComponent = ({ open, handleClose, data }) => {
   const openImage = (base64) => {
@@ -12,6 +13,25 @@ const ModalComponent = ({ open, handleClose, data }) => {
     }, 0);
   };
 
+  const renderAttachment = (file) => {
+    if (['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(file?.extension)) {
+      return (
+        <img
+          src={data?.base64String}
+          alt={data?.fileName}
+          className='w-11/12 h-auto object-contain bg-slate-200 rounded secondary-box-shadow'
+          onClick={() => openImage(data.base64String)}
+        />
+      );
+    } else {
+      return (
+        <div className='flex items-center justify-center w-52 h-52'>
+          <DocumentIcon className='w-10 h-10 text-gray-500' />
+        </div>
+      );
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -21,14 +41,15 @@ const ModalComponent = ({ open, handleClose, data }) => {
     >
       <div className='absolute top-1/2 left-1/2 w-5/6 -translate-x-1/2 -translate-y-1/2 bg-white flex flex-col items-center p-2 space-y-2 rounded primary-box-shadow'>
         <h1 className='w-full font-bold self-start block truncate'>
-          {data?.imageName}
+          {data?.fileName}
         </h1>
-        <img
-          src={data?.image}
-          alt={data?.imageName}
+        {renderAttachment(data)}
+        {/* <img
+          src={data?.base64String}
+          alt={data?.fileName}
           className='w-11/12 h-auto object-contain bg-slate-200 rounded secondary-box-shadow'
-          onClick={() => openImage(data.image)}
-        />
+          onClick={() => openImage(data.base64String)}
+        /> */}
         <button
           onClick={handleClose}
           className='self-end bg-blue-500 text-blue-200 py-1 px-4 rounded font-semibold'
