@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import ticketsReducer from '../features/ticketsSlice';
 import ticketReducer from '../features/ticketSlice';
 
 const store = configureStore({
   reducer: {
-    tickets: ticketReducer,
+    tickets: ticketsReducer,
+    ticket: ticketReducer,
   },
 });
 

@@ -5,13 +5,24 @@ import { API_URL } from '../../constants';
 
 const initialState = {
   isFetching: false,
-  data: [],
+  data: {},
   error: '',
 };
 
-export const fetchTickets = createAsyncThunk('tickets/fetch', async () => {
+export const fetchTicket = createAsyncThunk('ticket/fetch', async (id) => {
   return axios
-    .get(API_URL + '/report')
+    .get(API_URL + '/report/' + id)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return err;
+    });
+});
+
+export const patchComment = createAsyncThunk('ticket/put', async (payload) => {
+  return axios
+    .patch(API_URL + '/report/' + payload.id, payload.data)
     .then((res) => {
       return res.data;
     })
@@ -21,25 +32,44 @@ export const fetchTickets = createAsyncThunk('tickets/fetch', async () => {
 });
 
 const ticketSlice = createSlice({
-  name: 'tickets',
+  name: 'ticket',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchTickets.pending, (state) => {
+    builder.addCase(fetchTicket.pending, (state) => {
       state.isFetching = true;
-      state.data = [];
+      state.data = {};
       state.error = '';
     });
 
-    builder.addCase(fetchTickets.fulfilled, (state, action) => {
+    builder.addCase(fetchTicket.fulfilled, (state, action) => {
       state.isFetching = false;
       state.data = action.payload;
       state.error = '';
     });
 
-    builder.addCase(fetchTickets.rejected, (state, action) => {
+    builder.addCase(fetchTicket.rejected, (state, action) => {
       state.isFetching = false;
-      state.data = [];
+      state.data = {};
+      state.error = action.error.message;
+    });
+
+    // --------------------------------------------------------
+    builder.addCase(patchComment.pending, (state) => {
+      state.isFetching = true;
+      state.data = {};
+      state.error = '';
+    });
+
+    builder.addCase(patchComment.fulfilled, (state, action) => {
+      state.isFetching = false;
+      state.data = action.payload;
+      state.error = '';
+    });
+
+    builder.addCase(patchComment.rejected, (state, action) => {
+      state.isFetching = false;
+      state.data = {};
       state.error = action.error.message;
     });
   },

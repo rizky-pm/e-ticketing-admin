@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux/es/exports';
+import { useSelector, useDispatch } from 'react-redux';
 import Pagination from '@mui/material/Pagination';
 
-import { fetchTickets } from '../rtk/features/ticketSlice';
+import { fetchTickets } from '../rtk/features/ticketsSlice';
 
 import TicketCard from '../components/TicketCard';
 import TableComponent from '../components/Table/TableComponent';
