@@ -163,13 +163,13 @@ const Detail = () => {
   }, []);
 
   return (
-    <div className='relative py-2 lg:py-10 px-4 flex flex-col items-center'>
+    <div className='relative py-5 lg:py-10 px-4 flex flex-col items-center'>
       {!ticket?.data ? (
         <div className='flex justify-center items-center h-[100vh]'>
           <h1 className='font-bold text-2xl'>Loading data ...</h1>
         </div>
       ) : (
-        <div className='space-y-4 w-4/6 lg:p-10 bg-slate-100 rounded detail-container-box-shadow'>
+        <div className='space-y-4 lg:w-4/6 lg:p-10 lg:bg-slate-100 rounded lg:detail-container-box-shadow'>
           <div className='flex justify-between'>
             <h1 className='text-xl lg:text-4xl font-bold'>
               {ticket.data?.titleReport}
@@ -186,7 +186,7 @@ const Detail = () => {
               <p className='font-medium text-lg self-start'>Attachment</p>
 
               <div
-                className='w-full lg:w-1/3 h-60 bg-slate-50 border-dashed border-2 border-black flex flex-col justify-center items-center space-y-4 hover:cursor-pointer'
+                className='w-full lg:w-1/2 xl:w-1/3 h-60 bg-slate-50 border-dashed border-2 border-black flex flex-col justify-center items-center space-y-4 hover:cursor-pointer'
                 onClick={(e) => {
                   if (
                     ['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(
@@ -206,7 +206,9 @@ const Detail = () => {
               >
                 <div className='flex flex-col justify-center items-center'>
                   <DocumentIcon className='w-10 h-10 text-gray-500' />
-                  <span>{ticket?.data?.attachment.fileName}</span>
+                  <p className='text-center'>
+                    {ticket?.data?.attachment.fileName}
+                  </p>
                 </div>
               </div>
             </div>
