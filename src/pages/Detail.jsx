@@ -16,7 +16,6 @@ import SnackbarComponent from '../components/SnackbarComponent';
 
 const Detail = () => {
   const [comment, setComment] = useState('');
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarData, setSnackbarData] = useState({
     isOpen: false,
     message: '',
@@ -43,7 +42,7 @@ const Detail = () => {
       .substring(2, len + 2);
   };
 
-  const handleSubmitComment = async () => {
+  const handleSubmitComment = () => {
     const data = {
       comments: [
         ...ticket?.data?.comments,
@@ -94,21 +93,16 @@ const Detail = () => {
         data: {
           status: 'closed',
         },
-        // headers: { 'Content-Type': 'application/json' },
       });
 
-      console.log(res);
       setIsLoading(false);
-      setIsSnackbarOpen(true);
       setSnackbarData({
         isOpen: true,
         message: 'Success close ticket',
         type: 'success',
       });
     } catch (error) {
-      console.error(error);
       setIsLoading(false);
-      setIsSnackbarOpen(true);
       setSnackbarData({
         isOpen: true,
         message: 'Failed close ticket',
@@ -127,7 +121,6 @@ const Detail = () => {
       file.attachment.base64String.indexOf(',')
     );
 
-    console.log(meta + base64String);
     const linkSource = `${meta + base64String}`;
     const downloadLink = document.createElement('a');
     const fileName = file.attachment.fileName;
@@ -136,6 +129,8 @@ const Detail = () => {
     downloadLink.download = fileName;
     downloadLink.click();
   };
+
+  console.log(ticket?.data);
 
   useEffect(() => {
     dispatch(fetchTicket(params.id));
@@ -153,12 +148,12 @@ const Detail = () => {
           <p className='text-sm'>{ticket.data?.date}</p>
           <p className=''>{ticket.data?.descriptionReport}</p>
 
-          {ticket?.data?.attachment.fileName ? (
+          {ticket?.data?.attachment ? (
             <div>
               <p className='font-medium text-lg'>Attachment</p>
 
               <div
-                className='w-full h-60 bg-[#F7F9F9] border-dashed border-2 border-darkGreen flex flex-col justify-center items-center space-y-4'
+                className='w-full h-60 bg-[#F7F9F9] border-dashed border-2 border-darkGreen flex flex-col justify-center items-center space-y-4 hover:cursor-pointer'
                 onClick={(e) => {
                   if (
                     ['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(
@@ -173,7 +168,6 @@ const Detail = () => {
                     });
                   } else {
                     downloadFile(ticket?.data);
-                    console.log(ticket?.data?.attachment);
                   }
                 }}
               >
@@ -203,33 +197,40 @@ const Detail = () => {
           </div>
 
           <div className='space-y-4 flex flex-col'>
-            <p className='font-medium text-lg'>Add Comment</p>
-            <TextareaAutosize
-              aria-label='comment'
-              minRows={1}
-              placeholder='Your message'
-              onChange={(e) => {
-                handleComment(e);
-              }}
-              style={{
-                width: '100%',
-                border: '.0625rem solid lightgray',
-                padding: '.625rem',
-                resize: 'none',
-              }}
-              value={comment}
-            />
-            <button
-              onClick={handleSubmitComment}
-              className='py-1 px-4 rounded bg-slate-500 text-white font-semibold'
-            >
-              Comment
-            </button>
+            {ticket?.data?.status === 'closed' ? null : (
+              <>
+                <p className='font-medium text-lg'>Add Comment</p>
+
+                <TextareaAutosize
+                  aria-label='comment'
+                  minRows={1}
+                  placeholder='Your message'
+                  onChange={(e) => {
+                    handleComment(e);
+                  }}
+                  style={{
+                    width: '100%',
+                    border: '.0625rem solid lightgray',
+                    padding: '.625rem',
+                    resize: 'none',
+                  }}
+                  value={comment}
+                />
+
+                <button onClick={handleSubmitComment} className='comment-btn'>
+                  Comment
+                </button>
+              </>
+            )}
+
             <button
               onClick={handleCloseTicket}
-              className='py-1 px-4 rounded text-red-100 bg-red-500 font-semibold'
+              className='close-btn'
+              disabled={ticket?.data?.status === 'closed'}
             >
-              Close Ticket
+              {ticket?.data?.status === 'closed'
+                ? 'Ticket already closed'
+                : 'Close Ticket'}
             </button>
           </div>
 

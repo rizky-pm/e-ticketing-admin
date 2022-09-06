@@ -22,4 +22,20 @@
   .td-width {
     @apply nth-type-first:w-1/12 nth-type-second:w-2/12 nth-type-third:w-2/12 nth-type-fourth:w-3/12 nth-type-fifth:w-3/12 nth-type-sixth:w-1/12;
   }
+
+  .close-btn {
+    @apply py-1 px-4 rounded text-red-100 bg-red-500 font-semibold;
+  }
+
+  .close-btn[disabled] {
+    @apply py-1 px-4 rounded text-red-300 bg-red-100 font-semibold cursor-not-allowed;
+  }
+
+  .comment-btn {
+    @apply py-1 px-4 rounded bg-slate-500 text-white font-semibold;
+  }
+
+  .comment-btn[disabled] {
+    @apply py-1 px-4 rounded bg-slate-300 text-white font-semibold cursor-not-allowed;
+  }
 }
