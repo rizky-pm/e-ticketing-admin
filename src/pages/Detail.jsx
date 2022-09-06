@@ -130,7 +130,32 @@ const Detail = () => {
     downloadLink.click();
   };
 
-  console.log(ticket?.data);
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'open':
+        return (
+          <span className='text-green-500 bg-green-200 py-1 px-4 text-center inline-block rounded uppercase font-semibold'>
+            {status}
+          </span>
+        );
+      case 'pending':
+        return (
+          <span className='text-yellow-500 bg-yellow-200 py-1 px-4 text-center inline-block rounded uppercase font-semibold'>
+            {status}
+          </span>
+        );
+      case 'closed':
+        return (
+          <span className='text-red-500 bg-red-200 py-1 px-4 text-center inline-block rounded uppercase font-semibold'>
+            {status}
+          </span>
+        );
+      default:
+        break;
+    }
+  };
+
+  console.log(ticket);
 
   useEffect(() => {
     dispatch(fetchTicket(params.id));
@@ -138,22 +163,30 @@ const Detail = () => {
   }, []);
 
   return (
-    <div className='relative py-2 px-4'>
-      {ticket?.data?.isFetching ? (
-        <h1>Loading data ...</h1>
+    <div className='relative py-2 lg:py-10 px-4 flex flex-col items-center'>
+      {!ticket?.data ? (
+        <div className='flex justify-center items-center h-[100vh]'>
+          <h1 className='font-bold text-2xl'>Loading data ...</h1>
+        </div>
       ) : (
-        <div className='space-y-4'>
-          <h1 className='text-xl font-bold'>{ticket.data?.titleReport}</h1>
-          <p className='italic'>By {ticket.data?.fullName}</p>
+        <div className='space-y-4 w-4/6 lg:p-10 bg-slate-100 rounded detail-container-box-shadow'>
+          <div className='flex justify-between'>
+            <h1 className='text-xl lg:text-4xl font-bold'>
+              {ticket.data?.titleReport}
+            </h1>
+
+            <span>{renderStatus(ticket?.data?.status)}</span>
+          </div>
+          <p className='italic lg:text-xl'>By {ticket.data?.fullName}</p>
           <p className='text-sm'>{ticket.data?.date}</p>
           <p className=''>{ticket.data?.descriptionReport}</p>
 
           {ticket?.data?.attachment ? (
-            <div>
-              <p className='font-medium text-lg'>Attachment</p>
+            <div className=''>
+              <p className='font-medium text-lg self-start'>Attachment</p>
 
               <div
-                className='w-full h-60 bg-[#F7F9F9] border-dashed border-2 border-darkGreen flex flex-col justify-center items-center space-y-4 hover:cursor-pointer'
+                className='w-full lg:w-1/3 h-60 bg-slate-50 border-dashed border-2 border-black flex flex-col justify-center items-center space-y-4 hover:cursor-pointer'
                 onClick={(e) => {
                   if (
                     ['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(
@@ -184,19 +217,6 @@ const Detail = () => {
           )}
 
           <div className='space-y-4 flex flex-col'>
-            <p className='font-medium text-lg'>Comments</p>
-            {ticket?.data?.comments ? (
-              ticket?.data?.comments.map((comment, index) => {
-                return <CommentCard comment={comment} key={index} />;
-              })
-            ) : (
-              <p className='font-medium text-stone-400 text-center'>
-                No comment
-              </p>
-            )}
-          </div>
-
-          <div className='space-y-4 flex flex-col'>
             {ticket?.data?.status === 'closed' ? null : (
               <>
                 <p className='font-medium text-lg'>Add Comment</p>
@@ -210,19 +230,39 @@ const Detail = () => {
                   }}
                   style={{
                     width: '100%',
-                    border: '.0625rem solid lightgray',
-                    padding: '.625rem',
+                    border: '1px solid lightgray',
+                    padding: '10px',
                     resize: 'none',
                   }}
                   value={comment}
                 />
 
-                <button onClick={handleSubmitComment} className='comment-btn'>
+                <button
+                  onClick={handleSubmitComment}
+                  className='lg:w-2/12 lg:self-end comment-btn'
+                >
                   Comment
                 </button>
               </>
             )}
+          </div>
 
+          <div className='space-y-4 flex flex-col'>
+            <p className='font-medium text-lg'>Comments</p>
+            {ticket?.data?.comments ? (
+              ticket?.data?.comments.map((comment, index) => {
+                return <CommentCard comment={comment} key={index} />;
+              })
+            ) : (
+              <p className='font-medium text-stone-400 text-center'>
+                No comment
+              </p>
+            )}
+          </div>
+
+          <hr className='bg-slate-200 h-[.125rem]' />
+
+          <div className='flex flex-col'>
             <button
               onClick={handleCloseTicket}
               className='close-btn'

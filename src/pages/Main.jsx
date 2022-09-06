@@ -31,16 +31,14 @@ const Main = () => {
   return (
     <>
       <Navbar />
-      <main className='space-y-10 py-10 px-4'>
-        <div className='space-y-5 py-10 px-20'>
-          <TableComponent tableData={data} />
-          <Pagination
-            count={Math.ceil(tickets.length / pageSize)}
-            variant='outlined'
-            shape='rounded'
-            onChange={handleChangePage}
-          />
-        </div>
+      <main className='space-y-10 py-8 px-6 lg:py-10 lg:px-20'>
+        <TableComponent tableData={data} />
+        <Pagination
+          count={Math.ceil(tickets.length / pageSize)}
+          variant='outlined'
+          shape='rounded'
+          onChange={handleChangePage}
+        />
       </main>
     </>
   );

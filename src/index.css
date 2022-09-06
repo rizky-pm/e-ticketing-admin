@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .detail-container-box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+
   .primary-box-shadow {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
@@ -24,7 +28,7 @@
   }
 
   .close-btn {
-    @apply py-1 px-4 rounded text-red-100 bg-red-500 font-semibold;
+    @apply py-1 px-4 rounded text-red-100 bg-red-500 font-semibold hover:bg-red-400 transition-all;
   }
 
   .close-btn[disabled] {
@@ -32,7 +36,7 @@
   }
 
   .comment-btn {
-    @apply py-1 px-4 rounded bg-slate-500 text-white font-semibold;
+    @apply py-1 px-4 rounded bg-slate-500 hover:bg-slate-400 text-white font-semibold transition-all;
   }
 
   .comment-btn[disabled] {
