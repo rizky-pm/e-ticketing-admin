@@ -13,18 +13,18 @@ export const fetchTicket = createAsyncThunk('ticket/fetch', async (id) => {
   return axios
     .get(API_URL + '/report/' + id)
     .then((res) => {
-      return res.data;
+      return res;
     })
     .catch((err) => {
       return err;
     });
 });
 
-export const patchComment = createAsyncThunk('ticket/put', async (payload) => {
+export const patchTicket = createAsyncThunk('ticket/patch', async (payload) => {
   return axios
     .patch(API_URL + '/report/' + payload.id, payload.data)
     .then((res) => {
-      return res.data;
+      return res;
     })
     .catch((err) => {
       return err;
@@ -55,19 +55,19 @@ const ticketSlice = createSlice({
     });
 
     // --------------------------------------------------------
-    builder.addCase(patchComment.pending, (state) => {
+    builder.addCase(patchTicket.pending, (state) => {
       state.isFetching = true;
       state.data = {};
       state.error = '';
     });
 
-    builder.addCase(patchComment.fulfilled, (state, action) => {
+    builder.addCase(patchTicket.fulfilled, (state, action) => {
       state.isFetching = false;
       state.data = action.payload;
       state.error = '';
     });
 
-    builder.addCase(patchComment.rejected, (state, action) => {
+    builder.addCase(patchTicket.rejected, (state, action) => {
       state.isFetching = false;
       state.data = {};
       state.error = action.error.message;

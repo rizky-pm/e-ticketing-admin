@@ -70,7 +70,6 @@ const TableComponent = ({ tableData }) => {
                 {...row.getRowProps()}
                 className='even:bg-[#F3F7FB] py-4 px-6 hover:cursor-pointer hover:bg-slate-200 transition-all'
                 onClick={(e) => {
-                  console.log('Clicked', row.original);
                   navigateToDetail(e, row.original);
                 }}
               >

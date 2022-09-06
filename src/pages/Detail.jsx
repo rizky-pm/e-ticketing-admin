@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { DocumentIcon } from '@heroicons/react/24/outline';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import moment from 'moment';
 import 'moment/locale/id';
+import axios from 'axios';
 
-import { fetchTicket, patchComment } from '../rtk/features/ticketSlice';
+import { fetchTicket, patchTicket } from '../rtk/features/ticketSlice';
 
 import ModalComponent from '../components/ModalComponent';
 import CommentCard from '../components/CommentCard';
+import { API_URL } from '../constants';
+import SnackbarComponent from '../components/SnackbarComponent';
 
 const Detail = () => {
   const [comment, setComment] = useState('');
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const params = useParams();
-  const ticket = useSelector((state) => state.ticket);
+  const ticket = useSelector((state) => state.ticket?.data);
   const dispatch = useDispatch();
+  const state = useLocation().state;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -32,7 +43,7 @@ const Detail = () => {
       .substring(2, len + 2);
   };
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     const data = {
       comments: [
         ...ticket?.data?.comments,
@@ -54,11 +65,56 @@ const Detail = () => {
       data,
     };
 
-    dispatch(patchComment(payload));
+    dispatch(patchTicket(payload));
+    setComment('');
   };
 
-  const handleCloseTicket = () => {
-    console.log('close ticket');
+  const handleChangeStatus = () => {
+    if (state.status === 'open') {
+      const dataPayload = {
+        status: 'pending',
+      };
+
+      const payload = {
+        id: params.id,
+        data: dataPayload,
+      };
+
+      dispatch(patchTicket(payload));
+    }
+  };
+
+  const handleCloseTicket = async () => {
+    setIsLoading(true);
+
+    try {
+      const res = await axios({
+        method: 'PATCH',
+        url: `${API_URL}/report/${params.id}`,
+        data: {
+          status: 'closed',
+        },
+        // headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log(res);
+      setIsLoading(false);
+      setIsSnackbarOpen(true);
+      setSnackbarData({
+        isOpen: true,
+        message: 'Success close ticket',
+        type: 'success',
+      });
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      setIsSnackbarOpen(true);
+      setSnackbarData({
+        isOpen: true,
+        message: 'Failed close ticket',
+        type: 'error',
+      });
+    }
   };
 
   const downloadFile = (file) => {
@@ -83,11 +139,12 @@ const Detail = () => {
 
   useEffect(() => {
     dispatch(fetchTicket(params.id));
+    handleChangeStatus();
   }, []);
 
   return (
     <div className='relative py-2 px-4'>
-      {ticket.isFetching ? (
+      {ticket?.data?.isFetching ? (
         <h1>Loading data ...</h1>
       ) : (
         <div className='space-y-4'>
@@ -96,7 +153,7 @@ const Detail = () => {
           <p className='text-sm'>{ticket.data?.date}</p>
           <p className=''>{ticket.data?.descriptionReport}</p>
 
-          {ticket.data?.attachment ? (
+          {ticket?.data?.attachment.fileName ? (
             <div>
               <p className='font-medium text-lg'>Attachment</p>
 
@@ -105,24 +162,24 @@ const Detail = () => {
                 onClick={(e) => {
                   if (
                     ['bmp', 'jpg', 'jpeg', 'gif', 'png'].includes(
-                      ticket.data?.attachment.extension
+                      ticket?.data?.attachment.extension
                     )
                   ) {
                     handleOpen();
                     setModalData({
-                      base64String: ticket.data?.attachment.base64String,
-                      fileName: ticket.data?.attachment.fileName,
-                      extension: ticket.data?.attachment.extension,
+                      base64String: ticket?.data?.attachment.base64String,
+                      fileName: ticket?.data?.attachment.fileName,
+                      extension: ticket?.data?.attachment.extension,
                     });
                   } else {
                     downloadFile(ticket?.data);
-                    console.log(ticket?.data.attachment);
+                    console.log(ticket?.data?.attachment);
                   }
                 }}
               >
                 <div className='flex flex-col justify-center items-center'>
                   <DocumentIcon className='w-10 h-10 text-gray-500' />
-                  <span>{ticket?.data.attachment.fileName}</span>
+                  <span>{ticket?.data?.attachment.fileName}</span>
                 </div>
               </div>
             </div>
@@ -134,8 +191,8 @@ const Detail = () => {
 
           <div className='space-y-4 flex flex-col'>
             <p className='font-medium text-lg'>Comments</p>
-            {ticket?.data.comments ? (
-              ticket?.data.comments.map((comment, index) => {
+            {ticket?.data?.comments ? (
+              ticket?.data?.comments.map((comment, index) => {
                 return <CommentCard comment={comment} key={index} />;
               })
             ) : (
@@ -160,6 +217,7 @@ const Detail = () => {
                 padding: '.625rem',
                 resize: 'none',
               }}
+              value={comment}
             />
             <button
               onClick={handleSubmitComment}
@@ -182,6 +240,11 @@ const Detail = () => {
               data={modalData}
             />
           </div>
+
+          <SnackbarComponent
+            snackbarData={snackbarData}
+            setSnackbarData={setSnackbarData}
+          />
         </div>
       )}
     </div>
