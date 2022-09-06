@@ -72,6 +72,8 @@ const ticketSlice = createSlice({
       state.data = {};
       state.error = action.error.message;
     });
+
+    // --------------------------------------------------------
   },
 });
 

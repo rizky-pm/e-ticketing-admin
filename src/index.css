@@ -11,11 +11,15 @@
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
 
+  .navbar-box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+  }
+
   .th-width {
-    @apply nth-first:min-w-[3.125rem] nth-second:min-w-[12.5rem] nth-third:min-w-[18.75rem] nth-fourth:min-w-[15.625rem] nth-fifth:min-w-[15.625rem] nth-sixth:min-w-[9.375rem];
+    @apply nth-first:w-1/12 nth-second:w-2/12 nth-third:w-2/12 nth-fourth:w-3/12 nth-fifth:w-3/12 nth-sixth:w-1/12;
   }
 
   .td-width {
-    @apply nth-type-first:max-w-[3.125rem] nth-type-second:max-w-[12.5rem] nth-type-third:max-w-[18.75rem] nth-type-fourth:max-w-[15.625rem] nth-type-fifth:max-w-[15.625rem] nth-type-sixth:max-w-[9.375rem];
+    @apply nth-type-first:w-1/12 nth-type-second:w-2/12 nth-type-third:w-2/12 nth-type-fourth:w-3/12 nth-type-fifth:w-3/12 nth-type-sixth:w-1/12;
   }
 }

@@ -40,7 +40,7 @@ const Detail = () => {
           id: generateRandomId(34),
           message: comment,
           attachment: null,
-          date: moment().format('dddd, Do/MM/YYYY - HH:mm:ss'),
+          date: moment().format('dddd, Do/MM/YYYY - HH:mm'),
           user: {
             id: '1',
             name: 'administrator',
@@ -57,8 +57,11 @@ const Detail = () => {
     dispatch(patchComment(payload));
   };
 
+  const handleCloseTicket = () => {
+    console.log('close ticket');
+  };
+
   const downloadFile = (file) => {
-    // console.log(file.attachment.base64String);
     const meta = file.attachment.base64String.substring(
       file.attachment.base64String.indexOf(','),
       0
@@ -160,9 +163,15 @@ const Detail = () => {
             />
             <button
               onClick={handleSubmitComment}
-              className='py-1 px-4 rounded bg-red-500'
+              className='py-1 px-4 rounded bg-slate-500 text-white font-semibold'
             >
               Comment
+            </button>
+            <button
+              onClick={handleCloseTicket}
+              className='py-1 px-4 rounded text-red-100 bg-red-500 font-semibold'
+            >
+              Close Ticket
             </button>
           </div>
 

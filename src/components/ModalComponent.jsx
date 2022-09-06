@@ -44,12 +44,6 @@ const ModalComponent = ({ open, handleClose, data }) => {
           {data?.fileName}
         </h1>
         {renderAttachment(data)}
-        {/* <img
-          src={data?.base64String}
-          alt={data?.fileName}
-          className='w-11/12 h-auto object-contain bg-slate-200 rounded secondary-box-shadow'
-          onClick={() => openImage(data.base64String)}
-        /> */}
         <button
           onClick={handleClose}
           className='self-end bg-blue-500 text-blue-200 py-1 px-4 rounded font-semibold'

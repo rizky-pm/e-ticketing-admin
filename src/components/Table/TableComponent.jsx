@@ -49,7 +49,7 @@ const TableComponent = ({ tableData }) => {
   };
 
   return (
-    <div className='rounded overflow-scroll lg:overflow-auto'>
+    <div className='rounded overflow-x-auto overflow-y-hidden h-[450px] bg-white'>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -68,7 +68,7 @@ const TableComponent = ({ tableData }) => {
             return (
               <tr
                 {...row.getRowProps()}
-                className='even:bg-[#F3F7FB] py-4 px-6'
+                className='even:bg-[#F3F7FB] py-4 px-6 hover:cursor-pointer hover:bg-slate-200 transition-all'
                 onClick={(e) => {
                   console.log('Clicked', row.original);
                   navigateToDetail(e, row.original);
